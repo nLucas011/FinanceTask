@@ -56,7 +56,7 @@ export default function Transaction() {
   return (
     <div className="flex-col">
       <div className="flex-1 space-y-4 p-[8rem] pt-[6rem]">
-        <Card className="col-span-5 md:h-[30rem]">
+        <Card className="col-span-5">
           <CardHeader>
             <Select
               onValueChange={(e) => handleSearch(e)}
@@ -79,7 +79,6 @@ export default function Transaction() {
               </div>
             ) : (
               <DataTable
-                navigation={false}
                 columns={NegotiationColumn}
                 data={data?.data ?? []}
               />

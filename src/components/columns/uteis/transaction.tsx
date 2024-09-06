@@ -99,34 +99,8 @@ export const TransactionColumn: ColumnDef<Transaction>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell({ row }) {
       const { id } = row.original;
-      const queryClient = useQueryClient();
-
-      const { mutate, isLoading } = useMutation({
-        mutationFn: async ({ id }: { id: string }) => {
-          console.log("id", id);
-          return api.delete(`/api/user/transactions/${id}`, {
-            headers: {
-              Authorization: `${getCookie("token")}`,
-            },
-          });
-        },
-        onError: (error) => {
-          toast({
-            variant: "destructive",
-            title: "Ocorreu um erro ao deletar",
-            description: `${error}`,
-          });
-        },
-        onSuccess() {
-          toast({
-            variant: "default",
-            title: `Deletado com sucesso`,
-          });
-          queryClient.invalidateQueries("user:summary");
-        },
-      });
 
       return (
         <DropdownMenu>
@@ -142,12 +116,8 @@ export const TransactionColumn: ColumnDef<Transaction>[] = [
             <DropdownMenuItem asChild>
               <EditTransaction />
             </DropdownMenuItem>
-            <DropdownMenuItem
-              disabled={isLoading}
-              onClick={() => mutate({ id })}
-              className="text-red-500 hover:text-red-400"
-            >
-              Deletar
+            <DropdownMenuItem asChild>
+              <DeleteTransaction id={id} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -172,5 +142,43 @@ function EditTransaction() {
         </DialogHeader>
       </DialogContent>
     </Dialog>
+  );
+}
+
+export function DeleteTransaction({ id }: { id: string }) {
+  const queryClient = useQueryClient();
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      return api.delete(`/api/user/transactions/${id}`, {
+        headers: {
+          Authorization: `${getCookie("token")}`,
+        },
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Ocorreu um erro ao deletar",
+        description: `${error}`,
+      });
+    },
+    onSuccess() {
+      toast({
+        variant: "default",
+        title: `Deletado com sucesso`,
+      });
+      queryClient.invalidateQueries("user:summary");
+    },
+  });
+
+  return (
+    <Button
+      disabled={isLoading}
+      onClick={() => mutate({ id })}
+      className="relative flex cursor-pointer text-red-500 hover:text-red-400 select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+    >
+      Deletar
+    </Button>
   );
 }

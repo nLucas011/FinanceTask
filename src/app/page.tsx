@@ -121,7 +121,7 @@ export default function DashboardPage() {
               <Overview
                 revenue={data?.totalIncome || 0}
                 expenses={data?.Expenses || 0}
-                balance={(data?.totalIncome || 0) + (data?.Expenses || 0)}
+                balance={(data?.totalIncome || 0) - (data?.Expenses || 0)}
               />
             </CardContent>
           </Card>

@@ -70,7 +70,7 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  table.getState().pagination.pageSize = PageSize;
+  row ? (table.getState().pagination.pageSize = PageSize) : null;
 
   return (
     <div>
