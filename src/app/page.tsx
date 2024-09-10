@@ -5,6 +5,7 @@ import { AddAction } from "@/components/dashboard/add-action";
 import { Cards } from "@/components/dashboard/cards";
 import { Overview } from "@/components/dashboard/charts/overview";
 import { CreateGoal } from "@/components/dashboard/create-goal";
+import { Goals } from "@/components/dashboard/Goals";
 import { UserNav } from "@/components/dashboard/user-nav";
 import {
   Card,
@@ -14,12 +15,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { DataTable } from "@/components/ui/datatable";
-import { Progress } from "@/components/ui/progress";
 import { convertToReal } from "@/functions";
 import { api } from "@/service/api";
 import { Users } from "@/types";
 import { getCookie } from "cookies-next";
-import { DollarSign, Loader2, Plus } from "lucide-react";
+import { DollarSign, Loader2 } from "lucide-react";
 import { useQuery } from "react-query";
 
 export default function DashboardPage() {
@@ -56,7 +56,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-      
+
       <div className="flex-1 space-y-4 p-8 pt-6">
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">Inicio</h2>
@@ -92,22 +92,14 @@ export default function DashboardPage() {
             <CardContent className="pl-2">
               {data?.goals.map((g) => {
                 return (
-                  <div
-                    className="border border-zinc-500/40 rounded-xl p-4 max-w-[20rem] mb-2"
+                  <Goals
+                    id={g.id}
+                    title={g.title}
+                    MaxAmount={g.MaxAmount}
+                    targetAmount={g.targetAmount}
+                    venciment={g.createdAt}
                     key={Math.random()}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Plus className="h-7 w-7 p-1 bg-zinc-500/80 rounded-md  text-white" />
-                      <p className="font-medium">{g.title}</p>
-                    </div>
-                    <div className="mt-4">
-                      <Progress value={g.targetAmount} max={g.MaxAmount} />
-                      <div className="flex items-center justify-between mt-1">
-                        <p>{convertToReal(g.targetAmount)}</p>
-                        <p>{convertToReal(g.MaxAmount)}</p>
-                      </div>
-                    </div>
-                  </div>
+                  />
                 );
               }) ?? null}
             </CardContent>

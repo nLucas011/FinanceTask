@@ -77,8 +77,9 @@ export function CreateGoal() {
     mutate({
       data: {
         title: data.name,
-        minvalue: data.value_start,
+        targetAmount: data.value_start,
         maxvalue: data.value,
+        venciment: data.dueDate,
       },
     });
   };

@@ -22,7 +22,9 @@ export interface Transaction {
 }
 
 export interface Goals {
+  id: string;
   title: string;
   targetAmount: number;
   MaxAmount: number;
+  createdAt: string;
 }
