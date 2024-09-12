@@ -11,12 +11,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUser } from "@/hooks/auth";
+import { UseAuth, useUser } from "@/hooks/auth";
 import { signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
 
 export function UserNav() {
   const { user } = useUser();
+  const { logout } = UseAuth()
   if (!user) redirect("/auth");
 
   return (
@@ -45,7 +46,7 @@ export function UserNav() {
           <DropdownMenuItem>Configurações</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/auth" })}>
+        <DropdownMenuItem onClick={async () => await logout()}>
           Sair
         </DropdownMenuItem>
       </DropdownMenuContent>

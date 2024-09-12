@@ -40,7 +40,6 @@ export default function Transaction() {
   }>({
     queryKey: [`transaction:${getqueryparams}`],
     queryFn: () => {
-      console.log("query", getqueryparams);
       return api
         .get(`/api/user/transactions?query=${getqueryparams}`, {
           headers: {
@@ -78,10 +77,7 @@ export default function Transaction() {
                 <Loader2 className="mr-2 h-6 w-6 animate-spin text-center" />
               </div>
             ) : (
-              <DataTable
-                columns={NegotiationColumn}
-                data={data?.data ?? []}
-              />
+              <DataTable columns={NegotiationColumn} data={data?.data ?? []} />
             )}
           </CardContent>
         </Card>

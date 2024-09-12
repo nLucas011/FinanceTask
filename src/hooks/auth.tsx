@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "@/service/api";
-import { getCookie } from "cookies-next";
+import { deleteCookie, getCookie, hasCookie } from "cookies-next";
 import { useEffect } from "react";
 import { create } from "zustand";
 
@@ -34,11 +34,7 @@ export const UseAuth = create<UserStore>((set) => ({
     }
   },
   logout: async () => {
-    await api.post("/api/auth/logout", {
-      headers: {
-        Authorization: `${getCookie("token")}`,
-      },
-    });
+    deleteCookie("token")
     set({ user: null });
   },
 }));

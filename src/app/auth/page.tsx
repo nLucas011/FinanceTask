@@ -29,11 +29,12 @@ export default function Login() {
 
   const { mutate, isLoading } = useMutation({
     mutationFn: async () => {
-      const response = await api.post("/api/auth/login", {
-        email,
-        password,
-      });
-      return response.data;
+      return api
+        .post("/api/auth/login", {
+          email,
+          password,
+        })
+        .then((res) => res.data);
     },
     onSuccess: (data) => {
       setCookie("token", data.token, {
@@ -44,8 +45,36 @@ export default function Login() {
       });
       push("/");
     },
-    onError: () => {
-      setError("Email ou senha incorretos!");
+    onError: (error: any) => {
+      setError(`${error.response.data.message}`);
+      if (error.response.data.message == "Usuário não encontrado") {
+        toast({
+          title: "❌ Usuario não existe",
+          description: "Deseja se registrar?",
+          action: (
+            <Button
+              onClick={() => {
+                return api
+                  .post("/api/auth/register", {
+                    email,
+                    password,
+                  })
+                  .then((res) => {
+                    if (res.data) {
+                      toast({
+                        title: res.data.message,
+                        description:
+                          "Faça o Login com seu email e senha novamente!!",
+                      });
+                    }
+                  });
+              }}
+            >
+              Registrar
+            </Button>
+          ),
+        });
+      }
     },
   });
 

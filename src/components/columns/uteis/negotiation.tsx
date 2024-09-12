@@ -151,7 +151,7 @@ export function DeleteNegotiation({ id }: { id: string }) {
         headers: {
           Authorization: `${getCookie("token")}`,
         },
-      });
+      }).then((res) => res.data);
     },
     onError: (error) => {
       toast({
