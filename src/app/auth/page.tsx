@@ -24,7 +24,6 @@ export default function Login() {
   const [error, setError] = useState("");
   const { push } = useRouter();
   const { user } = useUser();
-
   if (user) redirect("/");
 
   const { mutate, isLoading } = useMutation({

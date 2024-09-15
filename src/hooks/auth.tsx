@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "@/service/api";
-import { deleteCookie, getCookie, hasCookie } from "cookies-next";
+import { deleteCookie, getCookie } from "cookies-next";
 import { useEffect } from "react";
 import { create } from "zustand";
 
@@ -17,24 +17,29 @@ export const UseAuth = create<UserStore>((set) => ({
   error: null,
   setUser: async () => {
     const token = getCookie("token");
+    const currentMonth = new Date().getMonth() + 1;
+    const currentYear = new Date().getFullYear();
     if (!token) {
       set({ error: "No token" });
       return;
     }
 
     try {
-      const response = await api.get("/api/users/me", {
-        headers: {
-          Authorization: `${token}`,
-        },
-      });
+      const response = await api.get(
+        `/api/users/me?mes=${currentMonth}&ano=${currentYear}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
+      );
       set({ user: response.data, error: null });
     } catch (error) {
       set({ error: "Invalid token" });
     }
   },
   logout: async () => {
-    deleteCookie("token")
+    deleteCookie("token");
     set({ user: null });
   },
 }));
@@ -44,10 +49,12 @@ export const useUser = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await setUser();
+      if (user === null) {
+        await setUser();
+      }
     };
     fetchData();
-  }, [setUser, error]);
+  }, [user, setUser]);
 
   return { user, error };
 };

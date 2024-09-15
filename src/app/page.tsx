@@ -5,6 +5,7 @@ import { AddAction } from "@/components/dashboard/add-action";
 import { Cards } from "@/components/dashboard/cards";
 import { Overview } from "@/components/dashboard/charts/overview";
 import { CreateGoal } from "@/components/dashboard/create-goal";
+import { CalendarDateRangePicker } from "@/components/dashboard/date-range-picker";
 import { Goals } from "@/components/dashboard/Goals";
 import { UserNav } from "@/components/dashboard/user-nav";
 import {
@@ -20,14 +21,18 @@ import { api } from "@/service/api";
 import { Users } from "@/types";
 import { getCookie } from "cookies-next";
 import { DollarSign, Loader2 } from "lucide-react";
+import { useState } from "react";
 import { useQuery } from "react-query";
 
 export default function DashboardPage() {
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
   const { data, isLoading } = useQuery<Users>({
-    queryKey: "user:summary",
+    queryKey: ["user:summary", selectedMonth, selectedYear],
     queryFn: async () => {
       return api
-        .get("/api/users/me", {
+        .get(`/api/users/me?mes=${selectedMonth}&ano=${selectedYear}`, {
           headers: {
             Authorization: `${getCookie("token")}`,
           },
@@ -47,6 +52,11 @@ export default function DashboardPage() {
     </div>;
   }
 
+  const handleDateChange = (date: Date) => {
+    setSelectedMonth(date.getMonth() + 1);
+    setSelectedYear(date.getFullYear());
+  };
+
   return (
     <div className="hidden flex-col md:flex">
       <div className="border-b">
@@ -61,6 +71,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">Inicio</h2>
           <div className="flex items-center space-x-2">
+            <CalendarDateRangePicker Change={handleDateChange} />
             <AddAction />
           </div>
         </div>
@@ -90,18 +101,20 @@ export default function DashboardPage() {
               <CreateGoal />
             </CardHeader>
             <CardContent className="pl-2">
-              {data?.goals.map((g) => {
-                return (
-                  <Goals
-                    id={g.id}
-                    title={g.title}
-                    MaxAmount={g.MaxAmount}
-                    targetAmount={g.targetAmount}
-                    venciment={g.createdAt}
-                    key={Math.random()}
-                  />
-                );
-              }) ?? null}
+              {data
+                ? data.goals?.map((g) => {
+                    return (
+                      <Goals
+                        id={g.id}
+                        title={g.title}
+                        MaxAmount={g.MaxAmount}
+                        targetAmount={g.targetAmount}
+                        venciment={g.createdAt}
+                        key={Math.random()}
+                      />
+                    );
+                  })
+                : null}
             </CardContent>
           </Card>
 

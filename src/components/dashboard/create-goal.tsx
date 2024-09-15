@@ -78,7 +78,7 @@ export function CreateGoal() {
       data: {
         title: data.name,
         targetAmount: data.value_start,
-        maxvalue: data.value,
+        MaxAmount: data.value,
         venciment: data.dueDate,
       },
     });

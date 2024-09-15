@@ -1,65 +1,107 @@
 "use client";
 
-import { addDays, format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import * as React from "react";
-import { DateRange } from "react-day-picker";
-
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useState } from "react";
+
+interface CalendarDateRangePickerProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  Change: (date: Date) => void;
+}
 
 export function CalendarDateRangePicker({
   className,
-}: React.HTMLAttributes<HTMLDivElement>) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2023, 0, 20),
-    to: addDays(new Date(2023, 0, 20), 20),
-  });
+  Change,
+}: CalendarDateRangePickerProps) {
+  const [date, setDate] = useState(new Date());
+
+  const months = [
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
+  ];
+
+  const changeMonth = (increment: number) => {
+    setDate((prevDate) => {
+      const newDate = new Date(prevDate);
+      newDate.setMonth(newDate.getMonth() + increment);
+      Change(newDate);
+      return newDate;
+    });
+  };
+
+  const changeYear = (increment: number) => {
+    setDate((prevDate) => {
+      const newDate = new Date(prevDate);
+      newDate.setFullYear(newDate.getFullYear() + increment);
+      Change(newDate);
+      return newDate;
+    });
+  };
 
   return (
-    <div className={cn("grid gap-2", className)}>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            id="date"
-            variant={"outline"}
-            className={cn(
-              "w-[260px] justify-start text-left font-normal",
-              !date && "text-muted-foreground"
-            )}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {date?.from ? (
-              date.to ? (
-                <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
-                </>
-              ) : (
-                format(date.from, "LLL dd, y")
-              )
-            ) : (
-              <span>Pick a date</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
-            numberOfMonths={2}
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          className="w-[200px] justify-between text-left font-normal"
+        >
+          <span>
+            {months[date.getMonth()]} - {date.getFullYear()}
+          </span>
+          <CalendarIcon className="ml-2 h-4 w-4 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <div className="p-4 flex flex-col items-center">
+          <div className="flex justify-between items-center w-full mb-4">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => changeYear(-1)}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-lg font-semibold">{date.getFullYear()}</span>
+            <Button variant="outline" size="icon" onClick={() => changeYear(1)}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="flex justify-between items-center w-full">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => changeMonth(-1)}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-lg font-semibold">
+              {months[date.getMonth()]}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => changeMonth(1)}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
