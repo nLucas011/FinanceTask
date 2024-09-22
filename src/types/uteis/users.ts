@@ -2,6 +2,7 @@ export interface Users {
   id: string;
   name: string;
   email: string;
+  avatar: string;
   Balance: number;
   totalIncome: number;
   Expenses: number;

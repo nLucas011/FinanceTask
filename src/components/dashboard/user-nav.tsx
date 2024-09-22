@@ -12,12 +12,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { UseAuth, useUser } from "@/hooks/auth";
-import { signOut } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 export function UserNav() {
   const { user } = useUser();
-  const { logout } = UseAuth()
+  const { logout } = UseAuth();
+  const { push } = useRouter();
   if (!user) redirect("/auth");
 
   return (
@@ -25,7 +25,7 @@ export function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user?.image ?? ""} alt={`@${user?.name}`} />
+            <AvatarImage src={user?.avatar ?? ""} alt={`@${user?.name}`} />
             <AvatarFallback>SC</AvatarFallback>
           </Avatar>
         </Button>
@@ -41,7 +41,9 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>Perfil</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => push("/profile")}>
+            Perfil
+          </DropdownMenuItem>
           <DropdownMenuItem>Assinaturas</DropdownMenuItem>
           <DropdownMenuItem>Configurações</DropdownMenuItem>
         </DropdownMenuGroup>

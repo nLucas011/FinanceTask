@@ -1,12 +1,13 @@
 "use client";
 
 import { api } from "@/service/api";
+import { Users } from "@/types";
 import { deleteCookie, getCookie } from "cookies-next";
 import { useEffect } from "react";
 import { create } from "zustand";
 
 interface UserStore {
-  user: any | null;
+  user: Users | null;
   setUser: () => Promise<void>;
   logout: () => Promise<void>;
   error: string | null;
